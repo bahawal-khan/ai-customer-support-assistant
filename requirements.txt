@@ -1,0 +1,48 @@
+# Backend
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+sqlalchemy
+alembic
+psycopg[binary]
+pgvector
+python-multipart
+
+# ML / NLP
+torch
+transformers
+datasets
+scikit-learn
+numpy
+pandas
+matplotlib
+seaborn
+accelerate
+sentencepiece
+
+# RAG / LangChain
+langchain
+langchain-core
+langchain-community
+langchain-postgres
+langchain-huggingface
+# sentence-transformers: required at runtime by the configured embedding
+# model (sentence-transformers/all-MiniLM-L6-v2, 384-dim) used by the
+# Phase 08 ingestion pipeline.
+sentence-transformers
+
+# LLM
+groq
+
+# Documents
+pypdf
+beautifulsoup4
+markdown
+
+# Testing / Quality
+pytest
+pytest-asyncio
+httpx
+ruff

@@ -1,0 +1,98 @@
+# Full single-VPS deployment: PostgreSQL/pgvector + FastAPI backend + Next.js
+# frontend, all on one Hostinger Ubuntu VPS (docs/deployment/DEPLOYMENT_SPEC.md).
+# No Vercel. Not used for local development -- docker-compose.yml (Postgres
+# only) plus a directly-run `uvicorn`/`next dev` stays the local workflow per
+# TECH_STACK.md ("Docker Compose for local PostgreSQL + pgvector").
+#
+# Backend and frontend publish ONLY to 127.0.0.1 -- neither is reachable from
+# the public internet directly. Host Nginx (deploy/nginx/ai-customer-support.conf)
+# is the sole public-facing process, terminates TLS (certbot), and reverse
+# proxies /api/ to the backend and everything else to the frontend, so both
+# share one origin/domain and no cross-origin CORS is needed in production.
+#
+# Usage on the VPS, from the repo root, with a real .env (never committed)
+# providing POSTGRES_PASSWORD, GROQ_API_KEY, CORS_ORIGINS, DOMAIN, etc.:
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# All secrets come from the hosting environment / .env file, never from this
+# file or the image (docs/deployment/DEPLOYMENT_SPEC.md: "Production secrets
+# must be injected through hosting environment settings").
+#
+# SAFETY: volume names (postgres_data, knowledge_base_data) are unchanged from
+# earlier deployments so `up` reuses existing data. Never run `down -v` or
+# `docker volume rm/prune` against these volumes. Take a `pg_dump` backup
+# before applying changes to an already-running deployment.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the environment/.env}
+      POSTGRES_DB: ${POSTGRES_DB:-customer_support}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-customer_support}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      # Must resolve the "postgres" service name, not the host/localhost
+      # DATABASE_URL used for local development -- backend and postgres share
+      # this compose network. Point at an external managed Postgres instead by
+      # overriding DATABASE_URL directly if not co-locating the database here.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the environment/.env}@postgres:5432/${POSTGRES_DB:-customer_support}
+      GROQ_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in the environment/.env}
+      GROQ_MODEL: ${GROQ_MODEL:-}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-384}
+      SENTIMENT_MODEL: ${SENTIMENT_MODEL:-cardiffnlp/twitter-roberta-base-sentiment-latest}
+      TOP_K: ${TOP_K:-5}
+      SIMILARITY_THRESHOLD: ${SIMILARITY_THRESHOLD:-0.0}
+      MAX_COMPLAINT_LENGTH: ${MAX_COMPLAINT_LENGTH:-5000}
+      # Must be the deployed frontend's real origin in production, not the
+      # localhost:3000 default from .env.example (docs/security/SECURITY_SPEC.md:
+      # "CORS configured explicitly").
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set CORS_ORIGINS to the deployed frontend origin}
+      PORT: ${PORT:-8000}
+    # Loopback-only: the host Nginx reverse proxy is the only public entry
+    # point (see top-of-file comment). Do not change to "0.0.0.0:..." or a
+    # bare port mapping -- that would expose FastAPI directly, bypassing TLS
+    # and the reverse proxy.
+    ports:
+      - "127.0.0.1:${PORT:-8000}:${PORT:-8000}"
+    volumes:
+      - knowledge_base_data:/app/data/knowledge_base
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Same-origin relative path: the browser calls https://<domain>/api/v1/...
+        # and host Nginx proxies that to the backend, so no absolute backend
+        # URL or CORS configuration is needed between frontend and backend.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    # Loopback-only, same reasoning as the backend's ports entry above.
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  postgres_data:
+  knowledge_base_data:

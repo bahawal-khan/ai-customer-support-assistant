@@ -1,0 +1,22 @@
+{
+  "model_name": "embedding_bilstm",
+  "seed": 42,
+  "top_k": 3,
+  "vocab_size": 1065,
+  "num_classes": 27,
+  "max_seq_len": 32,
+  "model": {
+    "embedding_dim": 128,
+    "hidden_dim": 128,
+    "num_lstm_layers": 1,
+    "dropout": 0.3
+  },
+  "train": {
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "max_epochs": 20,
+    "early_stopping_patience": 3,
+    "seed": 42
+  }
+}

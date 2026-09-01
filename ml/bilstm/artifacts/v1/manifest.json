@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-08-25T20:16:48.326396+00:00",
+  "model_name": "embedding_bilstm",
+  "seed": 42,
+  "data_sources": {
+    "train": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\train.csv",
+    "validation": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\validation.csv",
+    "test": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\test.csv"
+  },
+  "row_counts": {
+    "train": 21430,
+    "validation": 2743,
+    "test": 2699
+  },
+  "num_classes": 27,
+  "epochs_run": 7,
+  "best_epoch": 4,
+  "stopped_early": true,
+  "best_validation_macro_f1": 0.9910966932864851
+}

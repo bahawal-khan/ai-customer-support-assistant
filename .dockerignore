@@ -1,0 +1,36 @@
+# Secrets: never send these into a Docker build context, even though nothing
+# COPYs them explicitly (docs/security/SECURITY_SPEC.md).
+.env
+.env.*
+!.env.example
+!frontend/.env.example
+
+.git
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+.venv/
+venv/
+
+# Node / Next.js -- frontend is not part of the backend image.
+frontend/node_modules/
+frontend/.next/
+frontend/*.tsbuildinfo
+
+# Raw/processed dataset and ML training assets not needed to serve requests
+# (backend/Dockerfile only COPYs ml/distilbert/ and ml/data/config.py).
+data/raw/
+data/raw/.cache/
+data/processed/
+ml/baseline/
+ml/bilstm/
+ml/evaluation/
+ml/tests/
+
+# Docs are not needed inside the runtime image.
+docs/

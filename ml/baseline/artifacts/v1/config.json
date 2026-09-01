@@ -1,0 +1,21 @@
+{
+  "model_name": "tfidf_logreg",
+  "seed": 42,
+  "top_k": 3,
+  "tfidf": {
+    "lowercase": true,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "max_df": 0.9,
+    "sublinear_tf": true
+  },
+  "logreg": {
+    "max_iter": 1000,
+    "C": 1.0,
+    "class_weight": "balanced",
+    "random_state": 42
+  }
+}

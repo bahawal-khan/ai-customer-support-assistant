@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-08-26T16:30:30.859005+00:00",
+  "model_name": "distilbert",
+  "mode": "smoke",
+  "seed": 42,
+  "data_sources": {
+    "train": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\train.csv",
+    "validation": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\validation.csv",
+    "test": "E:\\Summer-2026-projects\\AI-Based-cutomer Support\\data\\processed\\test.csv"
+  },
+  "row_counts": {
+    "train": 270,
+    "validation": 135,
+    "test": 135
+  },
+  "num_classes": 27,
+  "epochs_run": 1,
+  "best_epoch": 1,
+  "stopped_early": false,
+  "best_validation_macro_f1": 0.0319221565605365
+}

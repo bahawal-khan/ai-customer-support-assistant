@@ -1,0 +1,74 @@
+# ================================
+# Secrets / Environment
+# ================================
+.env
+.env.*
+!.env.example
+!frontend/.env.example
+
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+
+# ================================
+# ML / Training Artifacts
+# ================================
+*.log
+ml/**/__pycache__/
+ml/**/.pytest_cache/
+ml/**/.ruff_cache/
+ml/**/.mypy_cache/
+
+# Raw datasets
+data/raw/
+data/raw/.cache/
+ml/data/raw/
+ml/data/raw/.cache/
+
+# ================================
+# Node / Next.js
+# ================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/*.tsbuildinfo
+
+# ================================
+# Build / Coverage
+# ================================
+coverage/
+htmlcov/
+.coverage
+.pytest_cache/
+
+# ================================
+# OS / Editor
+# ================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ================================
+# Temporary / Generated Files
+# ================================
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# ================================
+# Local Databases
+# ================================
+*.sqlite
+*.sqlite3

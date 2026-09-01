@@ -1,0 +1,21 @@
+{
+  "model_name": "distilbert",
+  "seed": 42,
+  "top_k": 3,
+  "max_seq_len": 64,
+  "num_classes": 27,
+  "model": {
+    "checkpoint": "distilbert-base-uncased",
+    "seq_classif_dropout": 0.1
+  },
+  "train": {
+    "batch_size": 16,
+    "learning_rate": 5e-05,
+    "weight_decay": 0.01,
+    "max_epochs": 1,
+    "early_stopping_patience": 1,
+    "max_train_examples": 270,
+    "max_eval_examples": 135,
+    "seed": 42
+  }
+}
