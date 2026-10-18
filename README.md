@@ -28,8 +28,6 @@ Submit a customer complaint and get **intent, sentiment, and priority classifica
 4. **Groq** generates a response grounded in the retrieved context — never inventing policy when context is insufficient.
 5. The complaint, analysis, retrieved sources, and generated response are persisted and shown in a Next.js frontend (Dashboard, New Complaint, Analysis Results, History, Knowledge Base).
 
-> 🔗 **Try it live:** [customer-support.khanova.tech](https://customer-support.khanova.tech)
-
 ---
 
 ## 📸 Screenshots
